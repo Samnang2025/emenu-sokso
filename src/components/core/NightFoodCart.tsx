@@ -38,7 +38,7 @@ export default function NightFoodCart({ cartItem, isOrderPage, cur }: PropType) 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const imgUrl = `https://pos-sokkhem.tsdsolution.net/assets/uploads/`;
+  const imgUrl = `https://pos-sotso.tsdsolution.net/assets/uploads/`;
 
   const handleOrder = (comment?: string) => {
     setOrderItem((prev) => prev + 1);

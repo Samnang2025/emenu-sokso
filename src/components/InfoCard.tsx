@@ -16,7 +16,7 @@ export default function InforCard({ children, title, logo }: propTypes) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://pos-sokkhem.tsdsolution.net/api/DriverController/e_orderConfig`);
+        const response = await axios.get(`https://pos-sotso.tsdsolution.net/api/DriverController/e_orderConfig`);
         const data = response.data;
         setInfo(data);
         console.log("fetch icons", data);
@@ -42,9 +42,9 @@ export default function InforCard({ children, title, logo }: propTypes) {
           <div className="flex flex-col  items-center ">
             <div className="h-[200px] w-full mb-20 relative">
               <img src="/images/well.jpg" className="object-cover w-full h-full " width={1000} height={1000} alt="" />
-              {/* <img src={`https://pos-sokkhem.tsdsolution.net/assets/uploads/logos/${info?.hero}`} className="object-cover w-full h-full " width={10000} height={10000} alt="" /> */}
+              {/* <img src={`https://pos-sotso.tsdsolution.net/assets/uploads/logos/${info?.hero}`} className="object-cover w-full h-full " width={10000} height={10000} alt="" /> */}
               <div className={"w-28 h-28 rounded-full flex justify-center items-center absolute border-2 border-gray-400 bottom-[-60px]  bg-white left-1/2 transform -translate-x-1/2"}>
-                <img className="object-cover " src={`https://pos-sokkhem.tsdsolution.net/assets/uploads/logos/${logo}`} alt="" width={1000} height={1000} />
+                <img className="object-cover " src={`https://pos-sotso.tsdsolution.net/assets/uploads/logos/${logo}`} alt="" width={1000} height={1000} />
               </div>
             </div>
             <p className="font-akbalthom-moul-4 text-center text-2xl text-gray-800">{title}</p>

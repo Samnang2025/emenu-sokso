@@ -32,7 +32,7 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
     } else if (tableNumber) {
       const fetchTableName = async () => {
         try {
-          const res = await axios.get(`https://pos-sokkhem.tsdsolution.net/api/DriverController/tables`);
+          const res = await axios.get(`https://pos-sotso.tsdsolution.net/api/DriverController/tables`);
           if (res.data && Array.isArray(res.data)) {
             const currentTable = res.data.find((t: any) => t.id === tableNumber);
             if (currentTable) {
@@ -75,7 +75,7 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
       };
       const jsonData = JSON.stringify(data)
       const response = await axios.post(
-        `https://pos-sokkhem.tsdsolution.net/api/DriverController/order`,
+        `https://pos-sotso.tsdsolution.net/api/DriverController/order`,
         jsonData,
         {
           headers: {
