@@ -51,6 +51,16 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
   // my code old
 
   const handleOrder = async () => {
+    if (!customerPhone || customerPhone.trim() === "") {
+      toast.warning("សូមបញ្ចូលលេខទូរស័ព្ទ", {
+        autoClose: 2000,
+        position: "top-center",
+        className: "font-battambang",
+        containerId: "modal-toast"
+      });
+      return;
+    }
+
     setIsLoading(true);
     const loading = toast.info("កំពុងធ្វើការកុម្ម៉ង់...", {
       autoClose: 2000,
@@ -59,10 +69,13 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
       containerId: "modal-toast"
     });
 
-    const product = basket.map(({ id, quantity, comment }) => ({
-      id: id,
-      quantity: quantity,
-      comment: comment || null,
+    const product = basket.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+      comment: item.comment || null,
+      unit_id: item.unit_id || null,
+      unit_name: item.unit_name || null,
+      unit_price: item.price || null,
     }));
 
     try {
@@ -104,7 +117,7 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
       if (modal) {
         modal.close();
       }
-      
+
       const infoModal = document.getElementById('customer_info_modal') as HTMLDialogElement | null;
       if (infoModal) {
         infoModal.close();
@@ -203,7 +216,7 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-gray-500 hover:bg-gray-100 z-10">✕</button>
           </form>
-          
+
           <div className="flex flex-col items-center mb-6 mt-2">
             <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-3">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -213,7 +226,7 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
             <h3 className="font-dangrek font-bold text-2xl text-center text-gray-800">ព័ត៌មានអតិថិជន</h3>
             <p className="text-sm font-battambang text-center text-gray-500 mt-1">សូមបញ្ជាក់ឈ្មោះ និងលេខទូរស័ព្ទរបស់អ្នក</p>
           </div>
-          
+
           <div className="flex flex-col space-y-4">
             <div className="form-control">
               <label className="label py-1">
@@ -221,20 +234,20 @@ export default function OrderItem({ cur, historyOrder, setHistoryOrder, isClickO
               </label>
               <input type="text" placeholder="បញ្ចូលឈ្មោះ..." value={customerName} onChange={(e) => setCustomerName(e.target.value)} className="input input-bordered w-full font-battambang bg-gray-50 border-gray-200 focus:bg-white focus:border-orange focus:ring-1 focus:ring-orange transition-all rounded-xl" />
             </div>
-            
+
             <div className="form-control">
               <label className="label py-1">
                 <span className="label-text text-xs font-battambang font-medium text-gray-600">លេខទូរស័ព្ទ (Phone)</span>
               </label>
               <input type="tel" placeholder="បញ្ចូលលេខទូរស័ព្ទ..." value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} className="input input-bordered w-full font-battambang bg-gray-50 border-gray-200 focus:bg-white focus:border-orange focus:ring-1 focus:ring-orange transition-all rounded-xl" />
             </div>
-            
+
             <button onClick={handleOrder} disabled={isLoading} className="bg-orange hover:bg-orange-600 active:scale-95 transition-all shadow-lg shadow-orange/30 font-dangrek py-3.5 mt-6 rounded-2xl text-white text-lg w-full flex justify-center items-center gap-2">
               {isLoading ? (
-                 <>
-                   <span className="loading loading-spinner loading-sm"></span>
-                   កំពុងដំណើរការ...
-                 </>
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  កំពុងដំណើរការ...
+                </>
               ) : "បញ្ជាក់ការកុម្ម៉ង់ (Confirm)"}
             </button>
           </div>

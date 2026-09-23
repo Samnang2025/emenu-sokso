@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Menu } from "@/types/model";
+import { Menu, UnitOption } from "@/types/model";
 import numeral from "numeral";
 import { useTranslation } from "@/lib/i18n"; //AKK Translation
 import { createPortal } from "react-dom";
@@ -10,7 +10,7 @@ import { createPortal } from "react-dom";
 type PropType = {
   cartItem: Menu;
   cur: any;
-  onAdd: (comment: string) => void;
+  onAdd: (comment: string, selectedUnit?: UnitOption | null) => void;
   isOpen: boolean;
   onClose: () => void;
   imgUrl: string;
@@ -27,17 +27,24 @@ const FoodItemModal: React.FC<PropType> = ({
   const [comment, setComment] = useState("");
   const [spicyLevel, setSpicyLevel] = useState("");
   const [chiliLevel, setChiliLevel] = useState("");
+  const [selectedUnit, setSelectedUnit] = useState<UnitOption | null>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    if (cartItem?.units_list && cartItem.units_list.length > 0) {
+      setSelectedUnit(cartItem.units_list[0]);
+    } else {
+      setSelectedUnit(null);
+    }
     return () => setMounted(false);
-  }, []);
+  }, [cartItem]);
 
   //AKK Translation
   const { locale, t } = useTranslation();
 
   const { name, second_name, imagePath, price, promo_price, brand, type, subcategory } = cartItem;
+  const activePrice = selectedUnit ? selectedUnit.price : price;
   const isSpicyNoodle = 
     type?.includes("មីហឹរ") || 
     subcategory?.includes("មីហឹរ") || 
@@ -59,7 +66,7 @@ const FoodItemModal: React.FC<PropType> = ({
   const displayName = (locale === 'en' && second_name) ? second_name : name;
   //End AKK Translation
   const real_price = numeral(promo_price).format("0.[00]");
-  const actual_price = numeral(price).format("0.[00]");
+  const actual_price = numeral(activePrice).format("0.[00]");
 
   if (!isOpen || !mounted) return null;
 
@@ -78,7 +85,7 @@ const FoodItemModal: React.FC<PropType> = ({
       finalComment = comment ? `${customization} ${comment}` : customization;
     }
     
-    onAdd(finalComment);
+    onAdd(finalComment, selectedUnit);
     setComment(""); // Reset comment after adding
     setSpicyLevel(""); // Reset spicy
     setChiliLevel(""); // Reset chili
@@ -128,7 +135,35 @@ const FoodItemModal: React.FC<PropType> = ({
             </div>
           </div>
            
-        
+          {/* Unit Selection for products with multiple units (e.g., ដប vs កេស) */}
+          {cartItem.units_list && cartItem.units_list.length > 1 && (
+            <div className="mb-5 p-3 bg-orange-50/50 rounded-xl border border-orange-100">
+              <label className="block text-sm font-battambong font-semibold text-gray-800 mb-2">
+                {t("selectUnit") || "ជ្រើសរើសខ្នាត (Select Unit)"}
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {cartItem.units_list.map((unitOpt) => {
+                  const isSelected = selectedUnit?.unit_id === unitOpt.unit_id;
+                  return (
+                    <button
+                      key={unitOpt.unit_id}
+                      type="button"
+                      onClick={() => setSelectedUnit(unitOpt)}
+                      className={`px-4 py-2 rounded-xl text-sm font-battambong transition-all flex items-center gap-1.5 ${
+                        isSelected
+                          ? "bg-orange text-white shadow-md scale-105 font-bold"
+                          : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                      }`}
+                    >
+                      <span>{unitOpt.name}</span>
+                      <span className="text-xs opacity-90">({cur || "$"}{numeral(unitOpt.price).format("0.[00]")})</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Spicy Level for មីហឹរ */}
           {isSpicyNoodle && (
             <div className="mb-6 space-y-4">

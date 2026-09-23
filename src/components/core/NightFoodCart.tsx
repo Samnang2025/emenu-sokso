@@ -40,21 +40,24 @@ export default function NightFoodCart({ cartItem, isOrderPage, cur }: PropType) 
 
   const imgUrl = `https://pos-sotso.tsdsolution.net/assets/uploads/`;
 
-  const handleOrder = (comment?: string) => {
+  const handleOrder = (comment?: string, selectedUnit?: any) => {
     setOrderItem((prev) => prev + 1);
     const cartData = {
       id,
       name,
       second_name, //AKK Translation
       imagePath,
-      price,
-      quantity: eachItemOrderNumber + 1,
+      price: selectedUnit ? selectedUnit.price : price,
+      quantity: 1,
       promo_price,
       code,
       type,
       subcategory,
       brand,
       comment: comment || null,
+      qty_prices: cartItem.qty_prices,
+      unit_id: selectedUnit ? selectedUnit.unit_id : null,
+      unit_name: selectedUnit ? selectedUnit.name : null,
     };
     dispatch(addToCart(cartData));
   };
@@ -89,7 +92,7 @@ export default function NightFoodCart({ cartItem, isOrderPage, cur }: PropType) 
         onClose={() => setIsModalOpen(false)}
         cartItem={cartItem}
         cur={cur}
-        onAdd={(comment) => handleOrder(comment)}
+        onAdd={(comment, selectedUnit) => handleOrder(comment, selectedUnit)}
         imgUrl={imgUrl}
       />
     </>

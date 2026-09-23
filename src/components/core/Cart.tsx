@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
 import "@/app/globals.css";
-import { Menu } from "@/types/model";
+import { Menu, UnitOption } from "@/types/model";
 import { addToCart } from "@/lib/cart/cartSlice";
 import { RootState } from "@/lib/store";
 import { useParams } from "next/navigation";
@@ -44,25 +44,31 @@ export default function Cart({ cartItem, isOrderPage, cur }: PropType) {
   const imgUrl = `https://pos-sotso.tsdsolution.net/assets/uploads/`;
 
   // Handle adding item to cart
-  const handleOrder = (comment?: string) => { //Sok Thean Add comment
-    setOrderItem((prev) => prev + 1); // Increment local quantity state
+  const handleOrder = (comment?: string, selectedUnit?: UnitOption | null) => {
+    setOrderItem((prev) => prev + 1);
+    const itemPrice = selectedUnit ? selectedUnit.price : (promo_price || price);
+    const unitName = selectedUnit ? selectedUnit.name : null;
+    const unitId = selectedUnit ? selectedUnit.unit_id : null;
+
     const cartData = {
       id,
-      name,
-      second_name, //AKK Translation
+      name: unitName ? `${name} (${unitName})` : name,
+      second_name,
       imagePath,
-      price,
-      quantity: eachItemOrderNumber + 1,
-      promo_price,
+      price: itemPrice,
+      quantity: 1,
+      promo_price: selectedUnit ? 0 : promo_price,
       code,
       type,
-      //Sok Thean Subcategory
       subcategory,
       brand,
-      comment: comment || null, //Sok Thean Add comment
+      comment: comment || null,
+      unit_id: unitId,
+      unit_name: unitName,
+      qty_prices: cartItem.qty_prices,
     };
 
-    dispatch(addToCart(cartData)); // Dispatch action to add item to Redux store
+    dispatch(addToCart(cartData));
   };
 
   // Reset local quantity state when currentQuantity changes
@@ -121,7 +127,7 @@ export default function Cart({ cartItem, isOrderPage, cur }: PropType) {
         onClose={() => setIsModalOpen(false)}
         cartItem={cartItem}
         cur={cur}
-        onAdd={(comment) => handleOrder(comment)} //Sok Thean Add comment
+        onAdd={(comment, selectedUnit) => handleOrder(comment, selectedUnit)}
         imgUrl={imgUrl}
       />
       {/* End popup Component */}

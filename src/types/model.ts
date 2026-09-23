@@ -4,6 +4,22 @@ interface MetaDataType { // Sok Thean
   title: string; // Title of the site
 }
 
+export interface UnitOption {
+  unit_id: number;
+  name: string;
+  price: number;
+  is_base: boolean;
+}
+
+export interface QtyPriceTier {
+  id?: string | number;
+  product_id?: string | number;
+  unit_id: string | number;
+  min_qty: string | number;
+  max_qty?: string | number | null;
+  price: string | number;
+}
+
 // Menu item data from the API
 interface Menu {
   id: string; // Unique identifier for the menu item
@@ -17,6 +33,9 @@ interface Menu {
   // Sok Thean Subcategory name from the API
   subcategory?: string;
   brand?: string | null;
+  units_list?: UnitOption[];
+  unit_name?: string;
+  qty_prices?: QtyPriceTier[];
 }
 
 // Category containing a list of menu items
@@ -37,6 +56,7 @@ interface CartItem {
   imagePath: string; // Path to the image of the cart item
   quantity: number; // Quantity of the cart item
   price: number; // Regular price of the cart item
+  orig_price?: number; // Base unit price before tier discount
   promo_price: number; // Promotional price of the cart item
   code: number; // Code associated with the cart item
   type: string; // Type/category of the cart item
@@ -45,6 +65,9 @@ interface CartItem {
   brand?: string | null;
   subtotalPrice?: number; // Subtotal price for the item (optional)
   comment?: string | null; // Additional comments for the item (optional)
+  unit_id?: number | null;
+  unit_name?: string | null;
+  qty_prices?: QtyPriceTier[];
 }
 
 // State of the cart
